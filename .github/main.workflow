@@ -1,6 +1,6 @@
 workflow "Branch notification" {
   on = "push"
-  resolves = ["Add Comment"]
+  resolves = ["atlassian/gajira/actions/comment@master"]
 }
 
 action "Jira Login" {
@@ -91,4 +91,10 @@ action "TODO Create" {
   needs = ["Login to Jira"]
   secrets = ["GITHUB_TOKEN"]
   args = "--project=GA --issuetype=Task"
+}
+
+action "atlassian/gajira/actions/comment@master" {
+  uses = "atlassian/gajira/actions/comment@master"
+  needs = ["Add Comment"]
+  args = "\"{{event.pusher.name}} [pushed|{{event.compare}}] {{event.commits.length}} commits to {{event.ref}} in {{ event.repository.full_name}}\""
 }
