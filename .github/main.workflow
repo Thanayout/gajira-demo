@@ -67,7 +67,7 @@ action "Login " {
 action "Create Jira Issue" {
   uses = "atlassian/gajira/actions/create@master"
   needs = ["Login "]
-  args = "--project=GA --issuetype=Story --summary=\"{{ event.issue.title }}\" --description=$'{{ event.issue.body }}\\n\\n_Created from Github Action_'"
+  args = "--project=GA --issuetype=Story --summary=\"{{ event.issue.title }}\" --description=$'{{ event.issue.body }}\\n\\n_Created from GitHub Action_'"
 }
 
 workflow "Create from TODO" {
