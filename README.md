@@ -1,4 +1,5 @@
 # GAJira Demo
+
 This repo is for experimenting with GitHub actions for Jira
 
 * Create issue in Jira when GitHub issue is created
