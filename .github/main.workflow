@@ -4,18 +4,18 @@ workflow "Branch notification" {
 }
 
 action "Jira Login" {
-  uses = "atlassian/gajira/actions/login@master"
+  uses = "atlassian/gajira-login@master"
   secrets = ["JIRA_API_TOKEN", "JIRA_USER_EMAIL", "JIRA_BASE_URL"]
 }
 
 action "Detect Issue in branch" {
-  uses = "atlassian/gajira/actions/find-issue-key@master"
+  uses = "atlassian/gajira-find-issue-key@master"
   needs = ["Jira Login"]
   args = "--from=branch"
 }
 
 action "Add Comment" {
-  uses = "atlassian/gajira/actions/comment@master"
+  uses = "atlassian/gajira-comment@master"
   needs = ["Detect Issue in branch"]
   args = "\"{{event.pusher.name}} [pushed|{{event.compare}}] {{event.commits.length}} commits to {{event.ref}} in {{ event.repository.full_name}}\""
 }
@@ -31,19 +31,19 @@ action "Filters for GitHub Actions" {
 }
 
 action "Login" {
-  uses = "atlassian/gajira/actions/login@master"
+  uses = "atlassian/gajira-login@master"
   needs = ["Filters for GitHub Actions"]
   secrets = ["JIRA_API_TOKEN", "JIRA_BASE_URL", "JIRA_USER_EMAIL"]
 }
 
 action "Find in commit messages" {
-  uses = "atlassian/gajira/actions/find-issue-key@master"
+  uses = "atlassian/gajira-find-issue-key@master"
   needs = ["Login"]
   args = "--from=commits"
 }
 
 action "Transition to done" {
-  uses = "atlassian/gajira/actions/transition@master"
+  uses = "atlassian/gajira-transition@master"
   needs = ["Find in commit messages"]
   args = "Done"
 }
@@ -59,13 +59,13 @@ action "Filters opened" {
 }
 
 action "Login " {
-  uses = "atlassian/gajira/actions/login@master"
+  uses = "atlassian/gajira-login@master"
   needs = ["Filters opened"]
   secrets = ["JIRA_API_TOKEN", "JIRA_BASE_URL", "JIRA_USER_EMAIL"]
 }
 
 action "Create Jira Issue" {
-  uses = "atlassian/gajira/actions/create@master"
+  uses = "atlassian/gajira-create@master"
   needs = ["Login "]
   args = "--project=GA --issuetype=Story --summary=\"{{ event.issue.title }}\" --description=$'{{ event.issue.body }}\\n\\n_Created from GitHub Action_'"
 }
@@ -81,13 +81,13 @@ action "Filter master" {
 }
 
 action "Login to Jira" {
-  uses = "atlassian/gajira/actions/login@master"
+  uses = "atlassian/gajira-login@master"
   needs = ["Filter master"]
   secrets = ["JIRA_API_TOKEN", "JIRA_BASE_URL", "JIRA_USER_EMAIL"]
 }
 
 action "TODO Create" {
-  uses = "atlassian/gajira/actions/todo@master"
+  uses = "atlassian/gajira-todo@master"
   needs = ["Login to Jira"]
   secrets = ["GITHUB_TOKEN"]
   args = "--project=GA --issuetype=Task"
